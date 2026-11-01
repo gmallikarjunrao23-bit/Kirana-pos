@@ -1,0 +1,30 @@
+[build]
+builder = "NIXPACKS"
+
+[[services]]
+name = "kirana-frontend"
+source = "frontend"
+
+[services.build]
+buildCommand = "npm install && npm run build"
+
+[services.deploy]
+startCommand = "npm run start"
+healthcheckPath = "/"
+healthcheckTimeout = 30
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
+
+[[services]]
+name = "kirana-backend"
+source = "backend"
+
+[services.build]
+buildCommand = "npm install && npx prisma generate --schema src/prisma/schema.prisma && npx prisma migrate deploy --schema src/prisma/schema.prisma && npm run build"
+
+[services.deploy]
+startCommand = "npm run start"
+healthcheckPath = "/api/health"
+healthcheckTimeout = 30
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
